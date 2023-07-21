@@ -23,6 +23,13 @@ export default function App() {
     return <Text>Acesso negado</Text>
   }
 
+  async function takePicture() {
+    if (camRef) {
+      const data = await camRef.current.takePictureAsync();
+      setCapturedPhoto(data.uri);
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Camera
@@ -41,6 +48,15 @@ export default function App() {
             }}
           >
             <FontAwesome name="exchange" size={23} color="red"></FontAwesome>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.buttonCamera}
+            onPress={takePicture}
+          >
+            <FontAwesome
+              name="camera"
+              size={23}
+              color="#fff"></FontAwesome>
           </TouchableOpacity>
         </View>
       </Camera>
@@ -69,6 +85,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
+    margin: 20,
+    height: 50,
+    width: 50,
+    borderRadius: 50,
+  },
+  buttonCamera: {
+    position: "absolute",
+    bottom: 50,
+    right: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "red",
     margin: 20,
     height: 50,
     width: 50,
