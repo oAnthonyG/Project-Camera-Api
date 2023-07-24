@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Modal, Image } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { Camera } from 'expo-camera';
 import { FontAwesome } from "@expo/vector-icons";
@@ -8,6 +8,7 @@ export default function App() {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [hasPermission, setHasPermission] = useState(null);
   const [cpaturedPhoto, setCapturedPhoto] = useState(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -27,6 +28,7 @@ export default function App() {
     if (camRef) {
       const data = await camRef.current.takePictureAsync();
       setCapturedPhoto(data.uri);
+      setOpen(true);
     }
   }
 
@@ -35,6 +37,7 @@ export default function App() {
       <Camera
         style={styles.camera}
         type={type}
+        ref={camRef}
       >
         <View style={styles.contentButtons}>
           <TouchableOpacity
@@ -60,6 +63,25 @@ export default function App() {
           </TouchableOpacity>
         </View>
       </Camera>
+      {cpaturedPhoto && (
+        <Modal animationType="slide"
+          transparent={true}
+          visible={open}
+        >
+          <View style={styles.contentModal}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => { setOpen(false) }}
+            >
+              <FontAwesome
+                name="close"
+                size={50}
+                color="#fff"
+              ></FontAwesome>
+            </TouchableOpacity>
+            <Image style={styles.imgPhoto} source={{ uri: cpaturedPhoto }} />
+          </View>
+        </Modal>)}
     </SafeAreaView>
   );
 }
